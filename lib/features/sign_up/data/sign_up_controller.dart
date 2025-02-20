@@ -110,7 +110,7 @@ class SignupController extends GetxController {
   }
 
   bool validateMobile(String mobile) {
-    return mobile.length == 10; // Example: 10-digit mobile number
+    return mobile.length == 15; // Example: 10-digit mobile number
   }
 
   bool validateDOB(String dob) {

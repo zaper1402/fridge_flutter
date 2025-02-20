@@ -63,7 +63,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 CustomTextField(
                   errorText: signupController.mobileError,
                   label: 'mobile_number'.tr,
-                  hintText: '+911234567890'.tr,
+                  hintText: '+3581234567890'.tr,
                   controller: signupController.mobileController,
                   isPassword: false,
                 ),
