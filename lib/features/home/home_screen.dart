@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:fridge_app/core/constants/assets.dart';
+import 'package:fridge_app/features/favorites/data/favorites_controller.dart';
 import 'package:fridge_app/features/favorites/favorites_screen.dart';
 import 'package:fridge_app/features/home/data/home_controller.dart';
 import 'package:fridge_app/features/home/widgets/bottom_nav_bar_widget.dart';
-import 'package:fridge_app/features/home/widgets/category_grid.dart';
 import 'package:fridge_app/features/home/widgets/floating_action_button.dart';
 import 'package:fridge_app/features/home/widgets/home_widget.dart';
+import 'package:fridge_app/features/notifications/data/notification_controller.dart';
 import 'package:fridge_app/features/notifications/notifications_screen.dart';
+import 'package:fridge_app/features/profile/data/profile_controller.dart';
 import 'package:fridge_app/features/profile/profile_screen.dart';
 import 'package:fridge_app/routing/name_routes.dart';
 import 'package:fridge_app/routing/router.dart';
@@ -44,6 +45,27 @@ class _HomeScreenState extends State<HomeScreen> {
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
+      if(index == 0){
+        if(Get.isRegistered<HomeController>()){
+          Get.delete<HomeController>();
+          homeController = Get.put(HomeController());
+        }
+      } else if(index == 1){
+        if(Get.isRegistered<FavoriteController>()){
+          Get.delete<FavoriteController>();
+          Get.put(FavoriteController());
+        }
+      } else if(index == 2){
+        if(Get.isRegistered<NotificationController>()){
+          Get.delete<NotificationController>();
+          Get.put(NotificationController());
+        }
+      } else if(index == 3){
+        if(Get.isRegistered<ProfileController>()){
+          Get.delete<ProfileController>();
+          Get.put(ProfileController());
+        }
+      }
     });
   }
 

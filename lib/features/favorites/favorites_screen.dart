@@ -22,7 +22,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
       backgroundColor: Colors.white,
       body: Column(
         children: [
-          buildAppBar('Favorites'.tr,),
+          buildAppBar('Favorites'.tr, showBackIcon: false),
           Expanded(child:
           Obx(
             () => favoriteController.favList.isEmpty

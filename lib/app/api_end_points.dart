@@ -1,6 +1,6 @@
 class ApiEndPointUrls {
   // Micro Services
-  static const String apiBaseUrl = "https://14d4-2405-201-5c05-e042-cf6d-c25a-ec7-ec3e.ngrok-free.app/";
+  static const String apiBaseUrl = "http://3.89.18.62:8000/";
   // "http://3.89.18.62:8000/";
   static const String loginUrl = "auth/login"; // login
   static const String updateUrl = "user/update"; 
