@@ -1,5 +1,27 @@
 import 'dart:convert';
 
+class HomeInventory{
+  final String? userName;
+  final List<Inventory>? inventory;
+
+  HomeInventory({this.userName, this.inventory});
+
+  factory HomeInventory.fromJson(Map<String, dynamic> json) {
+    return HomeInventory(
+      userName: json['username'],
+      inventory: (json['inventory'] as List?)?.map((e) => Inventory.fromJson(e)).toList(),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'username': userName,
+      'inventory': inventory?.map((e) => e.toJson()).toList(),
+    };
+  }
+
+}
+
 class Inventory {
   final String? id;
   final String? name;
@@ -109,8 +131,9 @@ class Entry {
   final DateTime? expiryDate;
   final String? creationDate;
   final int? userInventory;
+   String? quantityType;
 
-  Entry({this.id, this.quantity, this.expiryDate, this.creationDate, this.userInventory});
+  Entry({this.id, this.quantity, this.expiryDate, this.creationDate, this.userInventory, this.quantityType});
 
   factory Entry.fromJson(Map<String, dynamic> json) {
     return Entry(
@@ -119,6 +142,7 @@ class Entry {
       expiryDate: DateTime.parse(json['expiry_date']),
       creationDate: json['creation_date'],
       userInventory: json['user_inventory'],
+      quantityType: json['quantity_type']
     );
   }
 
@@ -129,6 +153,7 @@ class Entry {
       'expiry_date': expiryDate,
       'creation_date': creationDate,
       'user_inventory': userInventory,
+      'quantity_type' : quantityType
     };
   }
 }

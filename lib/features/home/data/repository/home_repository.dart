@@ -8,23 +8,23 @@ import 'package:fridge_app/features/home/data/data/inventory_model.dart';
 import 'package:fridge_app/features/home/data/data/product_item_request.dart';
 
 class HomeRepository {
-  Future<List<Inventory>?> homeInventoryList(int userId) async {
+  Future<HomeInventory?> homeInventoryList(int userId) async {
     try {
       Response response = await ApiBaseHelper().postHTTP(
           ApiEndPointUrls.homeUrl, {"user_id": userId},
           queryParameters: {"id": userId});
       if (response.statusCode == 200) {
-        List<Inventory> inventory = (response.data['inventory'] as List)
-            .map((e) => Inventory.fromJson(e))
-            .toList();
-        print("inventory List ${inventory.length}");
-        return inventory;
+        // List<Inventory> inventory = (response.data['inventory'] as List)
+        //     .map((e) => Inventory.fromJson(e))
+        //     .toList();
+        // print("inventory List ${inventory.length}");
+        return HomeInventory.fromJson(response.data);
       } else {
-        return [];
+        return null;
       }
     } catch (e) {
       print("inventory error $e");
-      return [];
+      return null;
     }
   }
 

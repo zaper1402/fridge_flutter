@@ -57,12 +57,12 @@ class CategoryGrid extends StatelessWidget {
               child: SizedBox(
                 height: scaleW(100),
                 width: double.infinity,
-                child: Image.asset( // Or Image.network if from API
+                child: Image.asset(
                   item.image ?? '',
                   
                   fit: BoxFit.cover,
                   errorBuilder: (context, object, stackTrace) {
-                    return const Center(child: Icon(Icons.error)); // Error placeholder
+                    return const Center(child: Icon(Icons.error));
                   },
                   
                 ),

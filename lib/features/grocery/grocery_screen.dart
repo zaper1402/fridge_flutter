@@ -47,7 +47,7 @@ class _GroceryScreenState extends State<GroceryScreen> {
                   Product? product = inventory?.products?[index].product;
 
                   if(product == null) return const SizedBox.shrink();
-                return VegetableItem(name: product.name ?? '', quantity: "${product.totalQuantity ?? 0} ${product.quantityType ?? ''}", onTap: (){
+                return VegetableItem(name: product.name ?? '', quantity: "${(product.totalQuantity ?? 0).toInt()} ${product.quantityType ?? ''}", onTap: (){
                     AppRouting().routeTo(NameRoutes.groceryDetailsScreen, arguments: inventory?.products?[index]);
                   },);
               }),

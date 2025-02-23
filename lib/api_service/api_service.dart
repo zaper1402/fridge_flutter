@@ -1,9 +1,7 @@
 
 import 'package:dio/dio.dart';
 import 'package:fridge_app/app/api_end_points.dart';
-import 'package:fridge_app/app/globals.dart';
 import 'package:fridge_app/storage/shared_preference.dart';
-import 'package:get_storage/get_storage.dart';
 
 class ApiBaseHelper {
   static String url = ApiEndPointUrls.apiBaseUrl;
@@ -27,10 +25,10 @@ class ApiBaseHelper {
     },
   );
 
-  Dio createDio() {
+  Future<Dio> createDio() async {
     Dio dio = Dio();
     var options = opts;
-    String accessToken = GetStorage().read(SharedPreference.userAccessToken) ?? "";
+    String accessToken = (await SharedPreference.getString(SharedPreference.userAccessToken)) ?? "";
     print("accessToken $accessToken");
 
     var headers = <String, dynamic>{};
@@ -98,8 +96,8 @@ class ApiBaseHelper {
     return handler.next(options);
   }
 
-  Dio get baseAPI {
-    return addInterceptors(createDio());
+  Future<Dio> get baseAPI async {
+    return addInterceptors(await createDio());
   }
 
   Future getHTTP(String url, {Map<String, dynamic>? queryParameters}) async {
@@ -117,7 +115,7 @@ class ApiBaseHelper {
     // }
     try {
       Response response =
-          await baseAPI.get(url, queryParameters: queryParameters);
+          await (await baseAPI).get(url, queryParameters: queryParameters);
           print("getHttp ${response.statusCode}");
       if (response.statusCode == 200) {
         return response.data;
@@ -151,7 +149,7 @@ class ApiBaseHelper {
     try {
       print("URL : $url $data");
       Response response =
-          await baseAPI.post(url, data: data, queryParameters: queryParameters);
+          await await (await baseAPI).post(url, data: data, queryParameters: queryParameters);
       print("Success ${response.statusCode} ${response.data}");
       return response;
     } on DioError catch (e) {
@@ -174,7 +172,7 @@ class ApiBaseHelper {
     //           'Something went wrong. Please check your internet connection or try again later.');
     // }
     try {
-      Response response = await baseAPI.put(url, data: data);
+      Response response = await await (await baseAPI).put(url, data: data);
       if (response.statusCode == 200) {
         return response;
       } else {
@@ -201,7 +199,7 @@ class ApiBaseHelper {
     //           'Something went wrong. Please check your internet connection or try again later.');
     // }
     try {
-      Response<T> response = await baseAPI.post<T>(url,
+      Response<T> response = await await (await baseAPI).post<T>(url,
           data: data,
           options: Options(
             responseType: ResponseType.bytes,
@@ -230,7 +228,7 @@ class ApiBaseHelper {
     //           'Something went wrong. Please check your internet connection or try again later.');
     // }
     try {
-      Response response = await baseAPI.delete(url);
+      Response response = await await (await baseAPI).delete(url);
       if (response.statusCode == 200) {
         return response;
       } else {
@@ -248,7 +246,7 @@ class ApiBaseHelper {
     Map<String, dynamic>? queryParameters,
   }) async {
     try {
-      Response response = await baseAPI.post(url,
+      Response response = await await (await baseAPI).post(url,
           data: formData,
           queryParameters: queryParameters,
           onSendProgress: (a, b) {});
@@ -265,7 +263,7 @@ class ApiBaseHelper {
       method: requestOptions.method,
       headers: requestOptions.headers,
     );
-    return baseAPI.request<dynamic>(requestOptions.path,
+    return await (await baseAPI).request<dynamic>(requestOptions.path,
         data: requestOptions.data,
         queryParameters: requestOptions.queryParameters,
         options: options);

@@ -9,6 +9,7 @@ class RecipeModel {
   final String? categoryName;
   final int? category;
   final String? imageUrl;
+  final int? missingItems;
 
   RecipeModel({
     this.id,
@@ -21,6 +22,7 @@ class RecipeModel {
     this.categoryName,
     this.category,
     this.imageUrl,
+    this.missingItems
   });
 
   factory RecipeModel.fromJson(Map<String, dynamic> json) {
@@ -35,6 +37,7 @@ class RecipeModel {
       categoryName: json['category_name'] as String?,
       category: json['category'] as int?,
       imageUrl: json['image_url'] as String?,
+      missingItems: json['missing_items'] as int?,
     );
   }
 
@@ -50,6 +53,7 @@ class RecipeModel {
       'category_name': categoryName,
       'category': category,
       'image_url': imageUrl,
+      'missing_items': missingItems,
     };
   }
 }

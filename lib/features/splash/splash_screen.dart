@@ -6,7 +6,6 @@ import 'package:fridge_app/routing/name_routes.dart';
 import 'package:fridge_app/routing/router.dart';
 import 'package:fridge_app/storage/shared_preference.dart';
 import 'package:fridge_app/themes/colors.dart';
-import 'package:get_storage/get_storage.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});

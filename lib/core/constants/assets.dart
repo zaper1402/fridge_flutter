@@ -26,3 +26,4 @@ const String clockIcon = "${imagesBasePath}clock_icon.png";
 const String favoriteActiveIcon = "${imagesBasePath}favorite_active_icon.png";
 const String favoriteInActiveIcon = "${imagesBasePath}favorite_inactive_icon.png";
 const String profileImage = "${imagesBasePath}profile_image.png";
+const String categoryPlaceholder = "${imagesBasePath}category_placeholder.jpeg";

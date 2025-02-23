@@ -23,6 +23,14 @@ class _CuisineCategoryScreenState extends State<CuisineCategoryScreen> {
   CuisineController cuisineController = Get.put(CuisineController());
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) { 
+      cuisineController.getCuisineList();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
@@ -62,7 +70,7 @@ class _CuisineCategoryScreenState extends State<CuisineCategoryScreen> {
                   itemBuilder: (context, index) {
                     return CategoryCard(
                       onTap: () {
-                        AppRouting().routeTo(NameRoutes.cuisineScreen);
+                        AppRouting().routeTo(NameRoutes.cuisineScreen, arguments: cuisineController.cuisineModelList[index + 1].id);
                       },
                       name: cuisineController.cuisineModelList[index + 1].name ?? '',
                       image: cuisineController.cuisineModelList[index + 1].imageUrl ?? '',

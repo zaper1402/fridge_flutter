@@ -22,13 +22,15 @@ class CuisineRecipeScreen extends StatefulWidget {
 }
 
 class _CuisineRecipeScreenState extends State<CuisineRecipeScreen> {
-  CuisineController cuisineController = Get.isRegistered<CuisineController>() ? Get.find<CuisineController>()
-  : Get.put(CuisineController());
+  CuisineController cuisineController = Get.isRegistered<CuisineController>()
+      ? Get.find<CuisineController>()
+      : Get.put(CuisineController());
   int? cuisineId;
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      print("Cuisine Recipe Id ${Get.arguments}");
       if (Get.arguments != null && Get.arguments is int) {
         cuisineId = Get.arguments;
       }
@@ -113,11 +115,20 @@ class _CuisineRecipeScreenState extends State<CuisineRecipeScreen> {
                             ),
                           ),
                           VerticalGap(scaleH(10)),
-                          CustomText(
-                            cuisineController.recipeDetailModel.value?.name ??
-                                '',
-                            style: getTextTheme().defaultText.copyWith(
-                                fontSize: scaleW(20), color: Colors.white),
+                          Container(
+                            padding:
+                                EdgeInsets.symmetric(horizontal: scaleW(6)),
+                            width: double.infinity,
+                            alignment: Alignment.center,
+                            child: CustomText(
+                              cuisineController.recipeDetailModel.value?.name ??
+                                  '',
+                              style: getTextTheme().defaultText.copyWith(
+                                  fontSize: scaleW(18), color: Colors.white),
+                              maxLines: 1,
+                              textAlign: TextAlign.center,
+                              overFlow: TextOverflow.ellipsis,
+                            ),
                           )
                         ],
                       ),
@@ -128,7 +139,9 @@ class _CuisineRecipeScreenState extends State<CuisineRecipeScreen> {
                       child: CustomButton(
                         text: "Let's Go",
                         onPressed: () {
-                          AppRouting().routeTo(NameRoutes.fridgeIngredientScreen, arguments: cuisineId);
+                          AppRouting().routeTo(
+                              NameRoutes.fridgeIngredientScreen,
+                              arguments: cuisineId);
                         },
                         backgroundColor: primaryColor,
                         textColor: Colors.white,
@@ -203,6 +216,7 @@ class _CuisineRecipeScreenState extends State<CuisineRecipeScreen> {
                               alignment: Alignment.centerLeft,
                               child: ListView.builder(
                                   shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
                                   itemCount: cuisineController.recipeDetailModel
                                           .value?.ingredients?.length ??
                                       0,
@@ -248,7 +262,53 @@ class _CuisineRecipeScreenState extends State<CuisineRecipeScreen> {
                                         )
                                       ],
                                     );
-                                  }))
+                                  })),
+                          VerticalGap(scaleH(20)),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: CustomText(
+                              'Steps',
+                              style: getTextTheme().defaultText.copyWith(
+                                    fontSize: scaleW(16),
+                                  ),
+                            ),
+                          ),
+                          VerticalGap(scaleH(10)),
+                          Align(
+                              alignment: Alignment.centerLeft,
+                              child: ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: cuisineController.recipeDetailModel
+                                          .value?.steps?.length ??
+                                      0,
+                                  itemBuilder: (_, index) {
+                                    return Row(
+                                      children: [
+                                        Container(
+                                          width: scaleW(4),
+                                          height: scaleW(4),
+                                          decoration: BoxDecoration(
+                                              color: primaryColor,
+                                              shape: BoxShape.circle),
+                                        ),
+                                        HorizontalGap(scaleW(8)),
+                                        Expanded(
+                                          child: CustomText(
+                                            cuisineController.recipeDetailModel
+                                                    .value?.steps?[index] ??
+                                                '',
+                                            style: getTextTheme()
+                                                .defaultText
+                                                .copyWith(
+                                                    fontSize: scaleW(12),
+                                                    color: textBrownColor),
+                                          ),
+                                        )
+                                      ],
+                                    );
+                                  })),
+                          VerticalGap(scaleH(20)),
                         ],
                       ),
                     )

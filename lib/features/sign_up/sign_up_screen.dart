@@ -13,6 +13,7 @@ import 'package:fridge_app/routing/router.dart';
 import 'package:fridge_app/themes/app_theme.dart';
 import 'package:fridge_app/themes/colors.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 // Usage Example
 class SignUpScreen extends StatefulWidget {
@@ -66,6 +67,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   hintText: '+3581234567890'.tr,
                   controller: signupController.mobileController,
                   isPassword: false,
+                  keyboardType: TextInputType.phone,
                 ),
                 VerticalGap(scaleH(4)),
                 CustomTextField(
@@ -74,6 +76,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   hintText: 'DD/MM/YYY'.tr,
                   controller: signupController.dobController,
                   isPassword: false,
+                  isReadyOnly: true,
+                  onTap: () async {
+                  DateTime? selectedDate = await signupController.showCalendarPopup(context);
+                  if(selectedDate != null){
+                  signupController.dobController.text = DateFormat("dd/MM/yyy").format(selectedDate);
+                  setState(() {
+                    
+                  });
+                  }
+                  },
                 ),
                                 VerticalGap(scaleH(4)),
 

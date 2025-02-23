@@ -13,17 +13,35 @@ import 'package:fridge_app/themes/colors.dart';
 class DishCard extends StatelessWidget {
   final RecipeModel recipeModel;
   final Function() onFavClick;
+  final bool isMissing;
 
   const DishCard(
-      {super.key, required this.recipeModel, required this.onFavClick});
+      {super.key,
+      required this.recipeModel,
+      required this.onFavClick,
+      this.isMissing = true});
 
   @override
   Widget build(BuildContext context) {
-    int mealType = int.parse(recipeModel.mealTypeChoice ?? '3');
-    print("recipe Id ${recipeModel.id}");
+    String valueText = '';
+    if (!isMissing) {
+      int mealType = int.parse(recipeModel.mealTypeChoice ?? '3');
+      valueText = mealType == 1
+          ? "Easy"
+          : mealType == 2
+              ? "Medium"
+              : mealType == 3
+                  ? "Hard"
+                  : "";
+    } else {
+      int missingItems = recipeModel.missingItems ?? 0;
+      valueText =
+          missingItems == 0 ? "All items avb" : "$missingItems item missing";
+    }
     return InkWell(
       onTap: () {
-        AppRouting().routeTo(NameRoutes.cuisineRecipeScreen, arguments: recipeModel.id);
+        AppRouting()
+            .routeTo(NameRoutes.cuisineRecipeScreen, arguments: recipeModel.id);
       },
       child: Stack(
         alignment: Alignment.bottomCenter,
@@ -34,7 +52,7 @@ class DishCard extends StatelessWidget {
             height: scaleH(100),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: primaryColor)),
+                border: Border.all(color: pinkTextColor)),
             margin: EdgeInsets.symmetric(horizontal: scaleW(10)),
             padding: EdgeInsets.symmetric(
                 vertical: scaleH(14), horizontal: scaleW(8)),
@@ -42,36 +60,35 @@ class DishCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                CustomText(recipeModel.name ?? '',
-                    style: getTextTheme().defaultText.copyWith(
-                        color: textBrownColor,
-                        fontSize: scaleW(14),
-                        fontWeight: FontWeight.w500),
-                        maxLines: 1,
-                        overFlow: TextOverflow.ellipsis,),
+                CustomText(
+                  recipeModel.name ?? '',
+                  style: getTextTheme().defaultText.copyWith(
+                      color: textBrownColor,
+                      fontSize: scaleW(14),
+                      fontWeight: FontWeight.w500),
+                  maxLines: 1,
+                  overFlow: TextOverflow.ellipsis,
+                ),
                 CustomText(recipeModel.subtitle ?? '',
                     style: getTextTheme().defaultText.copyWith(
                           color: textBrownColor,
                           fontSize: scaleW(10),
-                        ), maxLines: 2,
-                        overFlow: TextOverflow.ellipsis),
+                        ),
+                    maxLines: 2,
+                    overFlow: TextOverflow.ellipsis),
                 VerticalGap(scaleH(5)),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    CustomText(
-                        mealType == 1
-                            ? "Easy"
-                            : mealType == 2
-                                ? "Medium"
-                                : mealType == 3
-                                    ? "Hard"
-                                    : "",
-                        style: getTextTheme().defaultText.copyWith(
-                              color: primaryColor,
-                              fontSize: scaleW(10),
-                            )),
-                    const Spacer(),
+                    Expanded(
+                      child: CustomText(valueText,
+                          style: getTextTheme().defaultText.copyWith(
+                                color: pinkTextColor,
+                                fontSize: scaleW(10),
+                              ),
+                              maxLines: 1,),
+                      
+                    ),
                     Image.asset(
                       clockIcon,
                       width: scaleW(10),
@@ -80,7 +97,7 @@ class DishCard extends StatelessWidget {
                     HorizontalGap(scaleW(4)),
                     CustomText(recipeModel.recipeTime ?? '',
                         style: getTextTheme().defaultText.copyWith(
-                              color: primaryColor,
+                              color: pinkTextColor,
                               fontSize: scaleW(10),
                             )),
                   ],

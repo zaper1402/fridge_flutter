@@ -3,6 +3,7 @@ import 'package:fridge_app/core/constants/dimens.dart';
 import 'package:fridge_app/features/common_widgets/common_app_bar.dart';
 import 'package:fridge_app/features/common_widgets/custom_button.dart';
 import 'package:fridge_app/features/common_widgets/custom_text.dart';
+import 'package:fridge_app/features/common_widgets/horizontal_gap.dart';
 import 'package:fridge_app/features/common_widgets/vertical_gap.dart';
 import 'package:fridge_app/features/cuisine_category/data/controllers/ingredient_controller.dart';
 import 'package:fridge_app/features/cuisine_category/data/data/ingredient_model.dart';
@@ -84,7 +85,7 @@ class _FridgeIngredientScreenState extends State<FridgeIngredientScreen> {
   }
 
   _buildItem(int index) {
-    return Padding(
+    return Container(
       padding:
           EdgeInsets.symmetric(vertical: scaleH(6), horizontal: scaleW(20)),
       child: Row(
@@ -100,15 +101,17 @@ class _FridgeIngredientScreenState extends State<FridgeIngredientScreen> {
             ),
           ),
           CustomText(
-            (ingredientController.ingredientList.elementAt(index).quantity ?? 1).toString(),
+            (ingredientController.ingredientList.elementAt(index).quantity ?? 1).toInt().toString(),
             style: getTextTheme()
                 .navigationText
                 .copyWith(fontSize: scaleW(16), color: textBrownColor),
                 textAlign: TextAlign.end,
           ),
-          IconButton(onPressed: () {
-            AppRouting().routeTo(NameRoutes.updateIngredientScreen, onPopCallback: (value){
-              print("value $value");
+          HorizontalGap(scaleW(10)),
+          InkWell(
+            onTap: (){
+              ingredientController.ingredientList.elementAt(index).readyOnlyUnit = true;
+              AppRouting().routeTo(NameRoutes.updateIngredientScreen, onPopCallback: (value){
               var qt = value['qt'];
               String unit = value['unit'].toString();
               if(qt is int){
@@ -121,8 +124,26 @@ class _FridgeIngredientScreenState extends State<FridgeIngredientScreen> {
                   unit: unit
                 ));
               }
-            });
-          }, icon: const Icon(Icons.edit))
+            }, arguments: ingredientController.ingredientList.elementAt(index));
+            },
+            child:  const Icon(Icons.edit),
+          )
+          // IconButton(onPressed: () {
+          //   AppRouting().routeTo(NameRoutes.updateIngredientScreen, onPopCallback: (value){
+          //     var qt = value['qt'];
+          //     String unit = value['unit'].toString();
+          //     if(qt is int){
+          //       ingredientController.ingredientList.elementAt(index).quantity = qt;
+          //       ingredientController.ingredientList.elementAt(index).unit = unit;
+          //       ingredientController.ingredientList.refresh();
+          //       ingredientController.updatedList.add(IngredientModel(
+          //         id: ingredientController.ingredientList.elementAt(index).id,
+          //         quantity: ingredientController.ingredientList.elementAt(index).quantity,
+          //         unit: unit
+          //       ));
+          //     }
+          //   });
+          // }, icon: const Icon(Icons.edit))
         ],
       ),
     );

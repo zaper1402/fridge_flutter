@@ -18,15 +18,18 @@ class HomeController extends GetxController {
   TextEditingController subnameController = TextEditingController();
   String selectedUnit = '';
   String selectedCategory = '';
+  int selectedProductId = 0;
   String selectedAllergy = '';
   Rxn<DateTime> expiryDate = Rxn();
   TextEditingController productBrand = TextEditingController();
   List<DropDownData> categoryList = [];
   List<DropDownData> quantityList = [];
   List<DropDownData> allergyList = [];
+  RxBool isStandardExpiry = RxBool(true);
 
   RxBool isInventroyEmpty = RxBool(true);
   int userId = 0;
+  RxString userName = RxString('');
 
   @override
   onInit() async {
@@ -59,8 +62,10 @@ class HomeController extends GetxController {
       builder: (context) => const LoadingWidget(),
     );
     try {
-      List<Inventory>? inventory =
+      HomeInventory? homeInventory =
           await HomeRepository().homeInventoryList(userId);
+      List<Inventory>? inventory = homeInventory?.inventory;
+      userName.value = homeInventory?.userName ?? 'User';
       if (inventory?.isEmpty == true) {
         isInventroyEmpty.value = true;
       } else {
@@ -76,47 +81,51 @@ class HomeController extends GetxController {
     }
   }
 
-  Future addProductData() async {
+  Future<bool> addProductData() async {
     if (validateProduct(ProductItemRequest(
-        name: productName.text,
+        id: selectedProductId,
         brand: productBrand.text,
-        quantity: double.parse(productQuantity.text),
+        quantity: productQuantity.text.isNotEmpty
+            ? double.parse(productQuantity.text)
+            : 0,
         quantityType: selectedUnit,
-        category: selectedCategory,
-        allergy: selectedAllergy == "None" ? null : selectedAllergy,
         subname: subnameController.text,
-        expiry: DateTime.now(),
+        expiry: isStandardExpiry.isFalse ? expiryDate.value : null,
         userId: userId))) {
       showDialog(
         context: Get.context!,
         barrierDismissible: false,
         builder: (context) => const LoadingWidget(),
       );
-    }
-    try {
-      bool isSuccess = await HomeRepository().addProductData(ProductItemRequest(
-          name: productName.text,
-          brand: productBrand.text,
-          quantity: double.parse(productQuantity.text),
-          quantityType: selectedUnit,
-          category: selectedCategory,
-          allergy: selectedAllergy == "None" ? null : selectedAllergy,
-          expiry: expiryDate.value,
-          userId: userId));
-      Get.back();
-      if (isSuccess) {
-        Get.snackbar('Success', 'Data Added Successfully', duration: const Duration(seconds: 1));
-        productName.text = '';
-        productBrand.text = '';
-        productQuantity.text = '';
-        selectedUnit = '';
-        selectedAllergy = '';
-        selectedCategory = '';
-        expiryDate.value = null;
+      try {
+        bool isSuccess = await HomeRepository().addProductData(
+            ProductItemRequest(
+                id: selectedProductId,
+                brand: productBrand.text,
+                quantity: double.parse(productQuantity.text),
+                quantityType: selectedUnit,
+                expiry: isStandardExpiry.isFalse ? expiryDate.value : null,
+                subname: subnameController.text,
+                userId: userId));
+        Get.back();
+        if (isSuccess) {
+          Get.snackbar('Success', 'Data Added Successfully',
+              duration: const Duration(seconds: 1));
+          productName.text = '';
+          productBrand.text = '';
+          productQuantity.text = '';
+          selectedUnit = '';
+          selectedAllergy = '';
+          selectedCategory = '';
+          expiryDate.value = null;
+          subnameController.text = '';
+          return true;
+        }
+      } catch (e) {
+        Get.back();
       }
-    } catch (e) {
-      Get.back();
     }
+    return false;
   }
 
   Future updateEntryQuantity(List<EntryData> entryData) async {
@@ -144,7 +153,15 @@ class HomeController extends GetxController {
 
   bool validateProductName(String name) {
     if (name.isEmpty) {
-      print("Product name cannot be empty.");
+      Get.snackbar("Error", "Please select Product from List.");
+      return false;
+    }
+    return true;
+  }
+
+  bool validateProductSubName(String name) {
+    if (name.isEmpty) {
+      Get.snackbar("Error", "Please enter subname for product.");
       return false;
     }
     return true;
@@ -153,6 +170,7 @@ class HomeController extends GetxController {
   // Function to validate quantity (must be a double)
   bool validateQuantity(double quantity) {
     if (quantity <= 0) {
+      Get.snackbar("Error", "Please enter quantity for product.");
       return false;
     }
     return true;
@@ -160,15 +178,8 @@ class HomeController extends GetxController {
 
   // Function to validate quantity type
   bool validateQuantityType(String quantityType) {
-    if (quantityType.isNotEmpty) {
-      return false;
-    }
-    return true;
-  }
-
-  // Function to validate brand name
-  bool validateBrandName(String brand) {
-    if (brand.isEmpty) {
+    if (quantityType.isEmpty) {
+      Get.snackbar("Error", "Please select quantity type for product.");
       return false;
     }
     return true;
@@ -176,10 +187,19 @@ class HomeController extends GetxController {
 
   // Function to validate all fields together
   bool validateProduct(ProductItemRequest product) {
-    return validateProductName(product.name) &&
+    return validateProductName(productName.text) &&
+        validateProductSubName(product.subname ?? '') &&
         validateQuantity(product.quantity) &&
-        validateQuantityType(product.quantityType) &&
-        validateBrandName(product.brand);
+        validateQuantityType(product.quantityType) && validateExpiry();
+  }
+
+  validateExpiry() {
+    if (isStandardExpiry.isFalse && expiryDate.value == null) {
+      Get.snackbar("Error",
+          "Please select standard expiry or select expiry date for product.");
+      return false;
+    }
+    return true;
   }
 
   String getInventoryImage(String name) {
@@ -197,7 +217,7 @@ class HomeController extends GetxController {
       case 'grain':
         return grains;
       default:
-        return '';
+        return categoryPlaceholder;
     }
   }
 

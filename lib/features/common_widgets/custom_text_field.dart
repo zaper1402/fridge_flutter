@@ -11,6 +11,9 @@ class CustomTextField extends StatefulWidget {
   final RxString errorText;
   final TextEditingController controller;
   final bool isPassword;
+  final bool isReadyOnly;
+  final TextInputType? keyboardType;
+  final void Function()? onTap;
 
   const CustomTextField({
     Key? key,
@@ -19,6 +22,9 @@ class CustomTextField extends StatefulWidget {
     required this.controller,
     this.isPassword = false, 
     required this.errorText,
+    this.keyboardType,
+    this.isReadyOnly = false,
+    this.onTap
   }) : super(key: key);
 
   @override
@@ -45,8 +51,11 @@ class _CustomTextFieldState extends State<CustomTextField> {
         ),
         SizedBox(height: scaleW(10)),
         TextField(
+          onTap: widget.onTap,
+          readOnly: widget.isReadyOnly,
           controller: widget.controller,
           obscureText: widget.isPassword ? _obscureText : false,
+          keyboardType: widget.keyboardType,
           cursorColor: lightBrownColor.withOpacity(0.4),
           style: getTextTheme().defaultText.copyWith(color: lightBrownColor),
           scrollPadding: EdgeInsets.zero,

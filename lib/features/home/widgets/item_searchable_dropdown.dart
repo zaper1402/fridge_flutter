@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fridge_app/core/constants/dimens.dart';
 import 'package:fridge_app/features/common_widgets/custom_text.dart';
 import 'package:fridge_app/features/common_widgets/vertical_gap.dart';
+import 'package:fridge_app/features/home/data/data/category_data.dart';
 import 'package:fridge_app/themes/app_theme.dart';
 import 'dart:async';
 
@@ -9,9 +10,12 @@ import 'package:fridge_app/themes/colors.dart';
 
 class ItemSearchableDropdown extends StatefulWidget {
   final TextEditingController searchController;
-  final Future<List<String>> Function(String) onSearch;
+  final Function(CategoryData) onSelectCategory;
+  final Future<List<CategoryData>> Function(String) onSearch;
 
-  const ItemSearchableDropdown({super.key, required this.onSearch, required this.searchController});
+  const ItemSearchableDropdown({super.key, required this.onSearch,
+    required this.onSelectCategory,
+   required this.searchController});
 
   @override
   _ItemSearchableDropdownState createState() => _ItemSearchableDropdownState();
@@ -19,7 +23,7 @@ class ItemSearchableDropdown extends StatefulWidget {
 
 class _ItemSearchableDropdownState extends State<ItemSearchableDropdown> {
   late TextEditingController _searchController;
-  List<String> _searchResults = [];
+  List<CategoryData> _searchResults = [];
   OverlayEntry? _overlayEntry;
   Timer? _debounce;
   bool isDropdownSelected = false;
@@ -99,11 +103,12 @@ class _ItemSearchableDropdownState extends State<ItemSearchableDropdown> {
                 return InkWell(
                   onTap: () {
                     isDropdownSelected = true;
-                    _searchController.text = _searchResults[index];
+                    _searchController.text = _searchResults[index].name;
+                    widget.onSelectCategory(_searchResults[index]);
                     _hideDropdown();
                   },
                   child: ListTile(
-                    title: Text(_searchResults[index], style: getTextTheme().defaultText.copyWith(
+                    title: Text(_searchResults[index].name, style: getTextTheme().defaultText.copyWith(
                       color: textBrownColor
                     ),),
                     contentPadding: EdgeInsets.symmetric(

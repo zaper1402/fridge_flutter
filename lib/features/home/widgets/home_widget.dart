@@ -32,12 +32,14 @@ class HomeWidget extends GetView<HomeController> {
           VerticalGap(scaleH(10)),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: scaleW(20)),
-            child: CustomText(
-              "User's Fridge",
-              style: getTextTheme().navigationText.copyWith(
-                    color: textBrownColor,
-                  ),
-              textAlign: TextAlign.start,
+            child: Obx(
+              () => CustomText(
+                "${controller.userName}'s Fridge",
+                style: getTextTheme().navigationText.copyWith(
+                      color: textBrownColor,
+                    ),
+                textAlign: TextAlign.start,
+              ),
             ),
           ),
           Obx(() => controller.categories.isEmpty ? 

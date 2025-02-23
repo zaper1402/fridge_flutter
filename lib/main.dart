@@ -1,12 +1,18 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:fridge_app/core/constants/assets.dart';
 import 'package:fridge_app/core/constants/locale/localizations.dart';
+import 'package:fridge_app/firebase_options.dart';
 import 'package:fridge_app/routing/initial_binding.dart';
 import 'package:fridge_app/routing/name_routes.dart';
 import 'package:fridge_app/routing/router.dart';
 import 'package:get/get.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform
+  ); 
   runApp(const MyApp());
 }
 

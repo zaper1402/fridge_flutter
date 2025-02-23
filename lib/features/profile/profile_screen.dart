@@ -11,7 +11,6 @@ import 'package:fridge_app/storage/shared_preference.dart';
 import 'package:fridge_app/themes/app_theme.dart';
 import 'package:fridge_app/themes/colors.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -123,7 +122,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             TextButton(
               onPressed: () async {
-                await GetStorage().erase();
                 await SharedPreference.clearAllData();
                 Navigator.of(context).pop(true); // Confirm logout
                 Future.delayed(const Duration(seconds: 1), () {

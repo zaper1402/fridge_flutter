@@ -4,6 +4,7 @@ import 'package:fridge_app/features/common_widgets/common_app_bar.dart';
 import 'package:fridge_app/features/common_widgets/custom_button.dart';
 import 'package:fridge_app/features/common_widgets/custom_text.dart';
 import 'package:fridge_app/features/common_widgets/vertical_gap.dart';
+import 'package:fridge_app/features/cuisine_category/data/data/ingredient_model.dart';
 import 'package:fridge_app/features/home/data/data/entry_data.dart';
 import 'package:fridge_app/features/home/data/data/inventory_model.dart';
 import 'package:fridge_app/features/home/data/home_controller.dart';
@@ -76,7 +77,7 @@ class _GroceryDetailsScreenState extends State<GroceryDetailsScreen> {
                   onPressed: () async {
                     List<EntryData> entryData = [];
                     for (Entry entry in product?.entries ?? []) {
-                      entryData.add(EntryData(entryId: entry.id ?? 0, quantity: entry.quantity ?? 0));
+                      entryData.add(EntryData(entryId: entry.id ?? 0, quantity: entry.quantity ?? 0, quantityType: entry.quantityType));
                     }
                     await Get.find<HomeController>().updateEntryQuantity(entryData);
                     
@@ -109,7 +110,7 @@ class _GroceryDetailsScreenState extends State<GroceryDetailsScreen> {
                 ),
                 VerticalGap(scaleH(4)),
                 CustomText(
-                  'Expiry: ${DateFormat("dd/mm/yyy").format((item?.expiryDate) ?? DateTime.now())}',
+                  'Expiry: ${DateFormat("dd/MM/yyy").format((item?.expiryDate) ?? DateTime.now())}',
                   style: getTextTheme().appTextStyle.copyWith(color: Colors.grey, fontSize: scaleW(10))
                 ),
               ],
@@ -117,51 +118,67 @@ class _GroceryDetailsScreenState extends State<GroceryDetailsScreen> {
           ),
           Row(
             children: [
-              Container(
-                width: scaleW(36),
-                height: scaleW(36),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: lightBlueColor,
-                ),
-                child: IconButton(
-                  padding: EdgeInsets.zero,
-                  icon: const Icon(Icons.remove, color: Colors.grey,),
-                  onPressed: () {
-                    // Handle quantity decrement
-                    item?.quantity = (item.quantity ?? 1) - 1;
-                    setState(() {
+              // Container(
+              //   width: scaleW(36),
+              //   height: scaleW(36),
+              //   decoration: BoxDecoration(
+              //     shape: BoxShape.circle,
+              //     color: lightBlueColor,
+              //   ),
+              //   child: IconButton(
+              //     padding: EdgeInsets.zero,
+              //     icon: const Icon(Icons.remove, color: Colors.grey,),
+              //     onPressed: () {
+              //       // Handle quantity decrement
+              //       item?.quantity = (item.quantity ?? 1) - 1;
+              //       setState(() {
                       
-                    });
-                  },
-                ),
-              ),
+              //       });
+              //     },
+              //   ),
+              // ),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: scaleW(10)),
                 child: CustomText(
-                  item?.quantity.toString() ?? '',
+                  ((item?.quantity) ?? 0).toInt().toString(),
                   style: getTextTheme().defaultText.copyWith(color: textBrownColor)
                 ),
               ),
-              Container(
-                width: scaleW(36),
-                height: scaleW(36),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: primaryColor,
-                ),
-                child: IconButton(
-                  padding: EdgeInsets.zero,
-                  icon: const Icon(Icons.add, color: Colors.white,),
-                  onPressed: () {
-                    // Handle quantity decrement
-                    item?.quantity = (item.quantity ?? 1) + 1;
-                    setState(() {
+              InkWell(
+            onTap: (){
+              AppRouting().routeTo(NameRoutes.updateIngredientScreen, onPopCallback: (value){
+              var qt = value['qt'];
+              String unit = value['unit'].toString();
+              if(qt is int){
+                item!.quantity = qt.toDouble();
+              }
+              item?.quantityType = unit;
+              setState(() {
+                
+              });
+            }, arguments: IngredientModel(id: item?.id, name: productName, quantity: item?.quantity?.toInt(), unit: item?.quantityType));
+            },
+            child:  const Icon(Icons.edit),
+          )
+              // Container(
+              //   width: scaleW(36),
+              //   height: scaleW(36),
+              //   decoration: BoxDecoration(
+              //     shape: BoxShape.circle,
+              //     color: primaryColor,
+              //   ),
+              //   child: IconButton(
+              //     padding: EdgeInsets.zero,
+              //     icon: const Icon(Icons.add, color: Colors.white,),
+              //     onPressed: () {
+              //       // Handle quantity decrement
+              //       item?.quantity = (item.quantity ?? 1) + 1;
+              //       setState(() {
                       
-                    });
-                  },
-                ),
-              ),
+              //       });
+              //     },
+              //   ),
+              // ),
             ],
           ),
         ],

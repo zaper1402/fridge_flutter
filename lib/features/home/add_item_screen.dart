@@ -10,6 +10,8 @@ import 'package:fridge_app/features/home/data/home_controller.dart';
 import 'package:fridge_app/features/home/data/repository/home_repository.dart';
 import 'package:fridge_app/features/home/widgets/custom_drop_down.dart';
 import 'package:fridge_app/features/home/widgets/item_searchable_dropdown.dart';
+import 'package:fridge_app/routing/name_routes.dart';
+import 'package:fridge_app/routing/router.dart';
 import 'package:fridge_app/themes/app_theme.dart';
 import 'package:fridge_app/themes/colors.dart';
 import 'package:get/get.dart';
@@ -40,9 +42,10 @@ class AddItemScreen extends GetView<HomeController> {
                         ItemSearchableDropdown(
                           searchController: controller.productName,
                           onSearch: (query) async {
-                            List<CategoryData> data = await HomeRepository().productList(query);
-
-                            return data.map((e) => e.name).toList();
+                            return await HomeRepository().productList(query);
+                          },
+                          onSelectCategory: (category) {
+                            controller.selectedProductId = category.id;
                           },
                         ),
                         VerticalGap(scaleH(20)),
@@ -60,25 +63,25 @@ class AddItemScreen extends GetView<HomeController> {
                             controller.selectedUnit = id;
                           },
                         ),
-                        VerticalGap(scaleH(20)),
-                        CustomDropdown(
-                          dataList: controller.categoryList,
-                          hintText: 'MILK',
-                          heading: 'Category',
-                          onSelect: (id) {
-                            controller.selectedCategory = id;
+                        // VerticalGap(scaleH(20)),
+                        // CustomDropdown(
+                        //   dataList: controller.categoryList,
+                        //   hintText: 'MILK',
+                        //   heading: 'Category',
+                        //   onSelect: (id) {
+                        //     controller.selectedCategory = id;
 
-                          },
-                        ),
-                        VerticalGap(scaleH(20)),
-                        CustomDropdown(
-                          dataList: controller.allergyList,
-                          hintText: 'Apple',
-                          heading: 'Allergy Product',
-                          onSelect: (id) {
-                            controller.selectedAllergy = id;
-                          },
-                        ),
+                        //   },
+                        // ),
+                        // VerticalGap(scaleH(20)),
+                        // CustomDropdown(
+                        //   dataList: controller.allergyList,
+                        //   hintText: 'Apple',
+                        //   heading: 'Allergy Product',
+                        //   onSelect: (id) {
+                        //     controller.selectedAllergy = id;
+                        //   },
+                        // ),
                         VerticalGap(scaleH(20)),
                         _buildTextField('Brand', 'Optional',
                             controller: controller.productBrand),
@@ -94,6 +97,7 @@ class AddItemScreen extends GetView<HomeController> {
                             DateTime? date =
                                 await controller.showCalendarPopup(context);
                             controller.expiryDate.value = date;
+                            controller.isStandardExpiry(false);
                           },
                           child: Container(
                             width: double.infinity,
@@ -116,20 +120,33 @@ class AddItemScreen extends GetView<HomeController> {
                             ),
                           ),
                         ),
-                        Row(
-                          children: [
-                            Checkbox(
-                                value: true,
-                                focusColor: Colors.deepPurple,
-                                fillColor: const MaterialStatePropertyAll(
-                                    Colors.deepPurple),
-                                onChanged: (value) {}),
-                            CustomText(
-                              'Go with Standard Expiry',
-                              style: getTextTheme().defaultText.copyWith(
-                                  color: textBrownColor, fontSize: scaleW(14)),
-                            )
-                          ],
+                        InkWell(
+                          onTap: () {
+                            controller.isStandardExpiry(
+                                !controller.isStandardExpiry());
+                            controller.expiryDate.value = null;
+                          },
+                          child: Row(
+                            children: [
+                              Obx(
+                                () => Checkbox(
+                                    value: controller.isStandardExpiry.value,
+                                    focusColor: Colors.deepPurple,
+                                    fillColor: const MaterialStatePropertyAll(
+                                        Colors.deepPurple),
+                                    onChanged: (value) {
+                                      controller.isStandardExpiry(value);
+                                      controller.expiryDate.value = null;
+                                    }),
+                              ),
+                              CustomText(
+                                'Go with Standard Expiry',
+                                style: getTextTheme().defaultText.copyWith(
+                                    color: textBrownColor,
+                                    fontSize: scaleW(14)),
+                              )
+                            ],
+                          ),
                         ),
                       ],
                     ),
@@ -141,11 +158,16 @@ class AddItemScreen extends GetView<HomeController> {
                   child: CustomButton(
                     text: 'done'.tr,
                     onPressed: () async {
-                      await Get.find<HomeController>().addProductData();
-                      Future.delayed(const Duration(seconds: 2), (){
-                      Get.back();
-                        Get.find<HomeController>().getHomeInventoryList();
-                      });
+                      bool isSuccess =
+                          await Get.find<HomeController>().addProductData();
+                      if (isSuccess) {
+                        Future.delayed(const Duration(seconds: 2), () {
+                          AppRouting().offAllNavigateTo(NameRoutes.homeScreen);
+                        });
+                      } else {
+                        Get.snackbar("Error",
+                            "Not able to add product please try after sometime.");
+                      }
                     },
                     backgroundColor: primaryColor,
                     textColor: Colors.white,

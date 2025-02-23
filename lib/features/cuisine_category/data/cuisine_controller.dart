@@ -24,12 +24,6 @@ class CuisineController extends GetxController {
     CuisineModel(name: 'Chinese', imageUrl: chineseImage),
   ];
 
-  @override
-  void onReady() {
-    super.onReady();
-    getCuisineList();
-  }
-
   Future getCuisineList() async {
     showDialog(
       context: Get.context!,

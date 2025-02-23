@@ -12,8 +12,9 @@ class LoginController extends GetxController {
   final emailError = RxString('');
   final passwordError = RxString('');
 
-  Future<void> login() async {
+  Future<void> login({bool isGoogleSignin = false, String? googleEmail}) async {
     // Validate email and password
+    if(!isGoogleSignin){
     if (!validateEmail(emailController.text)) {
       emailError.value = 'Invalid email';
       return;
@@ -21,11 +22,13 @@ class LoginController extends GetxController {
       emailError.value = '';
     }
 
+    
     if (!validatePassword(passwordController.text)) {
       passwordError.value = 'Invalid password';
       return;
     } else {
       passwordError.value = '';
+    }
     }
 
     // Show loading dialog
@@ -37,7 +40,10 @@ class LoginController extends GetxController {
 
     try {
       // Call login API
-      final isSuccess = await LoginRepository().login(emailController.text, passwordController.text); 
+      final isSuccess = await LoginRepository().login(
+        isGoogleSignin ? googleEmail ?? emailController.text :
+        emailController.text, passwordController.text,
+      isGoogleSignin: isGoogleSignin); 
 
       // Check API response
       if (isSuccess) {

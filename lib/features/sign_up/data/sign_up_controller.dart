@@ -25,35 +25,35 @@ class SignupController extends GetxController {
   Future<void> signup() async {
     // Validate all fields
     if (!validateName(nameController.text)) {
-      nameError.value = 'Invalid name';
+      nameError.value = 'Username can not be empty.';
       return;
     } else {
       nameError.value = '';
     }
 
     if (!validateEmail(emailController.text)) {
-      emailError.value = 'Invalid email';
+      emailError.value = 'Please enter valid email Id.';
       return;
     } else {
       emailError.value = '';
     }
 
     if (!validateMobile(mobileController.text)) {
-      mobileError.value = 'Invalid mobile number';
+      mobileError.value = 'Mobile number should have atleast 10-15 digits.';
       return;
     } else {
       mobileError.value = '';
     }
 
     if (!validateDOB(dobController.text)) {
-      dobError.value = 'Invalid date of birth';
+      dobError.value = 'Please enter valid Date of Birth.';
       return;
     } else {
       dobError.value = '';
     }
 
     if (!validatePassword(passwordController.text)) {
-      passwordError.value = 'Invalid password';
+      passwordError.value = 'Password should have atleast 6 characters.';
       return;
     } else {
       passwordError.value = '';
@@ -61,7 +61,7 @@ class SignupController extends GetxController {
 
     if (!validateConfirmPassword(
         passwordController.text, confirmPasswordController.text)) {
-      confirmPasswordError.value = 'Passwords do not match';
+      confirmPasswordError.value = 'Password should match with above mentioned.';
       return;
     } else {
       confirmPasswordError.value = '';
@@ -110,12 +110,12 @@ class SignupController extends GetxController {
   }
 
   bool validateMobile(String mobile) {
-    return mobile.length == 15; // Example: 10-digit mobile number
+    return mobile.length >= 10 && mobile.length <= 15; // Example: 10-digit mobile number
   }
 
   bool validateDOB(String dob) {
     try {
-      DateFormat('yyyy/MM/dd').parse(dob); // Check if date can be parsed
+      DateFormat('dd/MM/yyy').parse(dob); // Check if date can be parsed
       return true;
     } catch (e) {
       return false;
@@ -128,5 +128,15 @@ class SignupController extends GetxController {
 
   bool validateConfirmPassword(String password, String confirmPassword) {
     return password == confirmPassword;
+  }
+
+   Future<DateTime?> showCalendarPopup(BuildContext context) async {
+    DateTime? selectedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1990, 1, 1),
+      lastDate: DateTime(2100, 12, 31),
+    );
+    return selectedDate;
   }
 }

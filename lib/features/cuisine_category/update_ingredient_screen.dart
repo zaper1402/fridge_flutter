@@ -4,12 +4,12 @@ import 'package:fridge_app/features/common_widgets/common_app_bar.dart';
 import 'package:fridge_app/features/common_widgets/custom_button.dart';
 import 'package:fridge_app/features/common_widgets/custom_text.dart';
 import 'package:fridge_app/features/common_widgets/vertical_gap.dart';
+import 'package:fridge_app/features/cuisine_category/data/data/ingredient_model.dart';
 import 'package:fridge_app/features/home/data/home_controller.dart';
 import 'package:fridge_app/features/home/widgets/custom_drop_down.dart';
 import 'package:fridge_app/themes/app_theme.dart';
 import 'package:fridge_app/themes/colors.dart';
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:get/utils.dart';
 
 class UpdateIngredientScreen extends StatefulWidget {
@@ -22,6 +22,19 @@ class UpdateIngredientScreen extends StatefulWidget {
 class _UpdateIngredientScreenState extends State<UpdateIngredientScreen> {
   String unitId = '';
   TextEditingController quantityController = TextEditingController();
+  IngredientModel? ingredientModel;
+
+  @override
+  void initState() {
+    super.initState();
+    if(Get.arguments != null && Get.arguments is IngredientModel){
+      ingredientModel = Get.arguments;
+      quantityController.text = (ingredientModel?.quantity ?? 1).toString();
+      unitId = ingredientModel?.unit ?? '';
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,9 +47,14 @@ class _UpdateIngredientScreenState extends State<UpdateIngredientScreen> {
             VerticalGap(scaleH(20)),
             _buildTextField("Quantity", "5", controller: quantityController),
             VerticalGap(scaleH(20)),
+            ingredientModel?.readyOnlyUnit == true ? 
+            _buildTextField("Unit", "KG",
+            readyOnly: true,
+             controller: TextEditingController(text: ingredientModel?.unit))
+             :
             CustomDropdown(
                             dataList: Get.find<HomeController>().quantityList,
-                            hintText: 'gms',
+                            hintText: ingredientModel?.unit ?? 'gms',
                             heading: 'Unit',
                             onSelect: (id) {
                               unitId = id;
@@ -68,7 +86,7 @@ class _UpdateIngredientScreenState extends State<UpdateIngredientScreen> {
   }
 
   Widget _buildTextField(String label, String hint,
-      {required TextEditingController controller}) {
+      {required TextEditingController controller, bool readyOnly = false}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -81,6 +99,7 @@ class _UpdateIngredientScreenState extends State<UpdateIngredientScreen> {
         TextField(
           controller: controller,
           cursorColor: borderColor,
+          readOnly: readyOnly,
           keyboardType: TextInputType.number,
           decoration: InputDecoration(
             hintText: hint,
