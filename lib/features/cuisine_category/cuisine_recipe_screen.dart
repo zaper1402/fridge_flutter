@@ -92,40 +92,42 @@ class _CuisineRecipeScreenState extends State<CuisineRecipeScreen> {
                       decoration: BoxDecoration(
                           color: primaryColor,
                           borderRadius: BorderRadius.circular(12)),
-                      height: scaleH(300),
                       width: double.infinity,
                       child: Column(
                         children: [
-                          ClipRRect(
-                            borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(12),
-                                topRight: Radius.circular(12)),
-                            child: Image.network(
-                              cuisineController
-                                      .recipeDetailModel.value?.imageUrl ??
-                                  '',
-                              height: scaleH(250),
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return SizedBox(
-                                  height: scaleH(250),
-                                  child: const Icon(Icons.error),
-                                );
-                              },
+                          SizedBox(
+                            height: scaleH(240),
+                            child: ClipRRect(
+                              borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(12),
+                                  topRight: Radius.circular(12)),
+                              child: Image.network(
+                                cuisineController
+                                        .recipeDetailModel.value?.imageUrl ??
+                                    '',
+                                height: scaleH(250),
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return SizedBox(
+                                    height: scaleH(250),
+                                    child: const Icon(Icons.error),
+                                  );
+                                },
+                              ),
                             ),
                           ),
                           VerticalGap(scaleH(10)),
                           Container(
                             padding:
-                                EdgeInsets.symmetric(horizontal: scaleW(6)),
+                                EdgeInsets.symmetric(horizontal: scaleW(6), vertical: scaleH(8)),
                             width: double.infinity,
                             alignment: Alignment.center,
                             child: CustomText(
-                              cuisineController.recipeDetailModel.value?.name ??
-                                  '',
+                              (cuisineController.recipeDetailModel.value?.name ??
+                                  ''),
                               style: getTextTheme().defaultText.copyWith(
                                   fontSize: scaleW(18), color: Colors.white),
-                              maxLines: 1,
+                              maxLines: 2,
                               textAlign: TextAlign.center,
                               overFlow: TextOverflow.ellipsis,
                             ),

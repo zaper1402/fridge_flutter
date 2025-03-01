@@ -128,7 +128,10 @@ class HomeController extends GetxController {
     return false;
   }
 
-  Future updateEntryQuantity(List<EntryData> entryData) async {
+  Future updateEntryQuantity(List<EntryData> entryData,
+      {bool navigateHome = true,
+      Function()? onSuccess,
+      String? successMsg}) async {
     showDialog(
       context: Get.context!,
       barrierDismissible: false,
@@ -139,12 +142,20 @@ class HomeController extends GetxController {
       bool isSuccess = await HomeRepository().updateEntryQuantity(entryData);
       Get.back();
       if (isSuccess) {
-        Get.snackbar('Success', 'Data Added Successfully',
-            duration: const Duration(seconds: 1));
-        Future.delayed(const Duration(seconds: 2), () {
-          AppRouting().offAllNavigateTo(NameRoutes.homeScreen);
-          // getHomeInventoryList();
-        });
+        if (navigateHome) {
+          Get.snackbar('Success', 'Data Added Successfully',
+              duration: const Duration(seconds: 1));
+          Future.delayed(const Duration(seconds: 2), () {
+            AppRouting().offAllNavigateTo(NameRoutes.homeScreen);
+          });
+        } else {
+          Get.snackbar('Success', 'Ingredient deleted Successfully',
+              duration: const Duration(seconds: 1));
+          Future.delayed(const Duration(seconds: 2), () {
+            print("remvoing screen");
+            AppRouting().offAllNavigateTo(NameRoutes.homeScreen);
+          });
+        }
       }
     } catch (e) {
       Get.back();
@@ -190,7 +201,8 @@ class HomeController extends GetxController {
     return validateProductName(productName.text) &&
         validateProductSubName(product.subname ?? '') &&
         validateQuantity(product.quantity) &&
-        validateQuantityType(product.quantityType) && validateExpiry();
+        validateQuantityType(product.quantityType) &&
+        validateExpiry();
   }
 
   validateExpiry() {

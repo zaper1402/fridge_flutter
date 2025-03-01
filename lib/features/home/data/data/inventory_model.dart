@@ -80,6 +80,7 @@ class ProductItem {
 class Product {
   final int? id;
   final String? name;
+  final String? subname;
   final String? brand;
   final String? category;
   final int? standardExpiryDays;
@@ -90,6 +91,7 @@ class Product {
   Product({
     this.id,
     this.name,
+    this.subname,
     this.brand,
     this.category,
     this.standardExpiryDays,
@@ -102,6 +104,7 @@ class Product {
     return Product(
       id: json['id'],
       name: json['name'],
+      subname: json['subname'],
       brand: json['brand'],
       category: json['category'],
       standardExpiryDays: json['standard_expiry_days'],
@@ -115,6 +118,7 @@ class Product {
     return {
       'id': id,
       'name': name,
+      'subname': subname,
       'brand': brand,
       'category': category,
       'standard_expiry_days': standardExpiryDays,

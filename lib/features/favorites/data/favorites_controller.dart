@@ -71,7 +71,8 @@ class FavoriteController extends GetxController {
     if (currentValue) {
       bool isSuccess = await removeToFavorite(favList[index].id ?? 0);
       if (isSuccess) {
-        favList[index].isFav = !currentValue;
+        favList.removeAt(index);
+        Get.snackbar('Success', 'Recipe removed from favroites.',);
         favList.refresh();
       }
     } else {

@@ -45,7 +45,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                         recipeModel: dish,
                         isMissing: false,
                         onFavClick: () {
-                          // favoriteController.onFavClick(index);
+                          favoriteController.onFavClick(index);
                         },
                       );
                     },

@@ -35,8 +35,6 @@ class MyApp extends StatelessWidget {
             fontFamily: fontFamilyPoppins,
             appBarTheme: const AppBarTheme(iconTheme: IconThemeData(size: 12)),
             textTheme: const TextTheme(
-              bodyText1: TextStyle(),
-              bodyText2: TextStyle(),
             ).apply(
               bodyColor: Colors.white,
             ),

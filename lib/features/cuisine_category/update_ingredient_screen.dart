@@ -5,6 +5,7 @@ import 'package:fridge_app/features/common_widgets/custom_button.dart';
 import 'package:fridge_app/features/common_widgets/custom_text.dart';
 import 'package:fridge_app/features/common_widgets/vertical_gap.dart';
 import 'package:fridge_app/features/cuisine_category/data/data/ingredient_model.dart';
+import 'package:fridge_app/features/home/data/data/entry_data.dart';
 import 'package:fridge_app/features/home/data/home_controller.dart';
 import 'package:fridge_app/features/home/widgets/custom_drop_down.dart';
 import 'package:fridge_app/themes/app_theme.dart';
@@ -27,19 +28,31 @@ class _UpdateIngredientScreenState extends State<UpdateIngredientScreen> {
   @override
   void initState() {
     super.initState();
-    if(Get.arguments != null && Get.arguments is IngredientModel){
+    if (Get.arguments != null && Get.arguments is IngredientModel) {
       ingredientModel = Get.arguments;
       quantityController.text = (ingredientModel?.quantity ?? 1).toString();
       unitId = ingredientModel?.unit ?? '';
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: buildAppBar('Update Ingredients'),
+      appBar: buildAppBar('Update Ingredients', actions: [
+        InkWell(
+            onTap: () {
+              showLogoutDialog(context);
+            },
+            child: SizedBox(
+                width: scaleW(60),
+                height: scaleW(60),
+                child: Icon(
+                  Icons.delete_outline,
+                  size: scaleW(24),
+                  color: Colors.red,
+                )))
+      ]),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: scaleW(20)),
         child: Column(
@@ -47,19 +60,19 @@ class _UpdateIngredientScreenState extends State<UpdateIngredientScreen> {
             VerticalGap(scaleH(20)),
             _buildTextField("Quantity", "5", controller: quantityController),
             VerticalGap(scaleH(20)),
-            ingredientModel?.readyOnlyUnit == true ? 
-            _buildTextField("Unit", "KG",
-            readyOnly: true,
-             controller: TextEditingController(text: ingredientModel?.unit))
-             :
-            CustomDropdown(
-                            dataList: Get.find<HomeController>().quantityList,
-                            hintText: ingredientModel?.unit ?? 'gms',
-                            heading: 'Unit',
-                            onSelect: (id) {
-                              unitId = id;
-                            },
-                          ),
+            ingredientModel?.readyOnlyUnit == true
+                ? _buildTextField("Unit", "KG",
+                    readyOnly: true,
+                    controller:
+                        TextEditingController(text: ingredientModel?.unit))
+                : CustomDropdown(
+                    dataList: Get.find<HomeController>().quantityList,
+                    hintText: ingredientModel?.unit ?? 'gms',
+                    heading: 'Unit',
+                    onSelect: (id) {
+                      unitId = id;
+                    },
+                  ),
             VerticalGap(scaleH(20)),
             Container(
               margin: EdgeInsets.only(bottom: scaleH(20)),
@@ -67,9 +80,16 @@ class _UpdateIngredientScreenState extends State<UpdateIngredientScreen> {
               child: CustomButton(
                 text: 'done'.tr,
                 onPressed: () async {
+                  double qt = double.parse(quantityController.text);
+                  if (qt <= 0) {
+                    Get.snackbar('Warning',
+                        'Quantity can not be zero please enter valid value.',
+                        duration: const Duration(seconds: 2));
+                    return;
+                  }
                   Get.back(result: {
-                    "qt" : int.parse(quantityController.text),
-                    "unit" : unitId
+                    "qt": double.parse(quantityController.text),
+                    "unit": unitId
                   });
                 },
                 backgroundColor: primaryColor,
@@ -82,6 +102,49 @@ class _UpdateIngredientScreenState extends State<UpdateIngredientScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  Future<bool?> showLogoutDialog(BuildContext context) async {
+    return showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: CustomText(
+            "Delete",
+            style: getTextTheme().defaultText,
+          ),
+          content: CustomText(
+            "Are you sure you want to delete?",
+            style: getTextTheme().defaultText.copyWith(color: textBrownColor),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(false); // Cancel logout
+              },
+              child: Text(
+                "Cancel",
+                style: getTextTheme().defaultText.copyWith(color: greyColor),
+              ),
+            ),
+            TextButton(
+              onPressed: () async {
+                Get.back();
+                List<EntryData> entryData = [];
+                entryData.add(EntryData(
+                    entryId: ingredientModel?.id ?? 0,
+                    quantity: 0,
+                    quantityType: ingredientModel?.unit));
+
+                await Get.find<HomeController>().updateEntryQuantity(entryData,
+                    navigateHome: false);
+              },
+              child: Text("Delete", style: TextStyle(color: primaryColor)),
+            ),
+          ],
+        );
+      },
     );
   }
 

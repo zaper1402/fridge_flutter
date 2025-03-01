@@ -16,7 +16,6 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 class GroceryDetailsScreen extends StatefulWidget {
-
   const GroceryDetailsScreen({super.key});
 
   @override
@@ -24,14 +23,13 @@ class GroceryDetailsScreen extends StatefulWidget {
 }
 
 class _GroceryDetailsScreenState extends State<GroceryDetailsScreen> {
-
   ProductItem? product;
 
   @override
   void initState() {
     super.initState();
     var arguments = Get.arguments;
-    if(arguments != null && arguments is ProductItem){
+    if (arguments != null && arguments is ProductItem) {
       product = arguments;
     }
   }
@@ -48,53 +46,69 @@ class _GroceryDetailsScreenState extends State<GroceryDetailsScreen> {
             Container(
               padding: EdgeInsets.symmetric(horizontal: scaleW(20)),
               margin: EdgeInsets.only(bottom: scaleH(20)),
-                width: double.infinity,
-                child: CustomButton(
-                  text: "${'category:'.tr}${product?.product?.category ?? ''}",
-                  onPressed: () {
-                    Get.back();
-                  },
-                  backgroundColor: primaryColor,
-                  textColor: Colors.white,
-                  padding: EdgeInsets.symmetric(vertical: scaleH(14), horizontal: scaleW(24)),
-                   borderRadius: 100,
-                ),
+              width: double.infinity,
+              child: CustomButton(
+                text: "${'category:'.tr}${product?.product?.category ?? ''}",
+                onPressed: () {
+                  Get.back();
+                },
+                backgroundColor: primaryColor,
+                textColor: Colors.white,
+                padding: EdgeInsets.symmetric(
+                    vertical: scaleH(14), horizontal: scaleW(24)),
+                borderRadius: 100,
               ),
+            ),
             Expanded(
               child: ListView.builder(
                 itemCount: product?.entries?.length ?? 0,
                 itemBuilder: (context, index) {
-                  return _buildItemCard(product?.product?.name ??'' , product?.entries?[index]);
+                  String productName =
+                      (product?.product?.subname ?? '').isNotEmpty
+                          ? product?.product?.subname ?? ''
+                          : product?.product?.name ?? '';
+                  return _buildItemCard(productName, product?.entries?[index],
+                      deleteItem: () async {
+                    Future.delayed(const Duration(seconds: 1), () {
+                      product?.entries?.removeAt(index);
+                      setState(() {});
+                    });
+                  });
                 },
               ),
             ),
             Container(
               padding: EdgeInsets.symmetric(horizontal: scaleW(20)),
               margin: EdgeInsets.only(bottom: scaleH(20)),
-                width: double.infinity,
-                child: CustomButton(
-                  text: 'done'.tr,
-                  onPressed: () async {
-                    List<EntryData> entryData = [];
-                    for (Entry entry in product?.entries ?? []) {
-                      entryData.add(EntryData(entryId: entry.id ?? 0, quantity: entry.quantity ?? 0, quantityType: entry.quantityType));
-                    }
-                    await Get.find<HomeController>().updateEntryQuantity(entryData);
-                    
-                  },
-                  backgroundColor: primaryColor,
-                  textColor: Colors.white,
-                  padding: EdgeInsets.symmetric(vertical: scaleH(14), horizontal: scaleW(24)),
-                   borderRadius: 100,
-                ),
-              )
+              width: double.infinity,
+              child: CustomButton(
+                text: 'done'.tr,
+                onPressed: () async {
+                  List<EntryData> entryData = [];
+                  for (Entry entry in product?.entries ?? []) {
+                    entryData.add(EntryData(
+                        entryId: entry.id ?? 0,
+                        quantity: entry.quantity ?? 0,
+                        quantityType: entry.quantityType));
+                  }
+                  await Get.find<HomeController>()
+                      .updateEntryQuantity(entryData);
+                },
+                backgroundColor: primaryColor,
+                textColor: Colors.white,
+                padding: EdgeInsets.symmetric(
+                    vertical: scaleH(14), horizontal: scaleW(24)),
+                borderRadius: 100,
+              ),
+            )
           ],
         ),
       ),
     );
   }
 
-  Widget _buildItemCard(String productName, Entry? item) {
+  Widget _buildItemCard(String productName, Entry? item,
+      {Function? deleteItem}) {
     return Container(
       padding: const EdgeInsets.all(16.0),
       child: Row(
@@ -104,81 +118,55 @@ class _GroceryDetailsScreenState extends State<GroceryDetailsScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CustomText(
-                  productName,
-                  style: getTextTheme().navigationText.copyWith(fontSize: scaleW(20))
-                ),
+                CustomText(productName,
+                    style: getTextTheme()
+                        .navigationText
+                        .copyWith(fontSize: scaleW(20))),
                 VerticalGap(scaleH(4)),
                 CustomText(
-                  'Expiry: ${DateFormat("dd/MM/yyy").format((item?.expiryDate) ?? DateTime.now())}',
-                  style: getTextTheme().appTextStyle.copyWith(color: Colors.grey, fontSize: scaleW(10))
-                ),
+                    'Expiry: ${DateFormat("dd/MM/yyy").format((item?.expiryDate) ?? DateTime.now())}',
+                    style: getTextTheme()
+                        .appTextStyle
+                        .copyWith(color: Colors.grey, fontSize: scaleW(10))),
               ],
             ),
           ),
           Row(
             children: [
-              // Container(
-              //   width: scaleW(36),
-              //   height: scaleW(36),
-              //   decoration: BoxDecoration(
-              //     shape: BoxShape.circle,
-              //     color: lightBlueColor,
-              //   ),
-              //   child: IconButton(
-              //     padding: EdgeInsets.zero,
-              //     icon: const Icon(Icons.remove, color: Colors.grey,),
-              //     onPressed: () {
-              //       // Handle quantity decrement
-              //       item?.quantity = (item.quantity ?? 1) - 1;
-              //       setState(() {
-                      
-              //       });
-              //     },
-              //   ),
-              // ),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: scaleW(10)),
                 child: CustomText(
-                  ((item?.quantity) ?? 0).toInt().toString(),
-                  style: getTextTheme().defaultText.copyWith(color: textBrownColor)
-                ),
+                    "${((item?.quantity) ?? 0).toDouble().toStringAsFixed(1)} ${item?.quantityType ?? ''}",
+                    style: getTextTheme()
+                        .defaultText
+                        .copyWith(color: textBrownColor)),
               ),
               InkWell(
-            onTap: (){
-              AppRouting().routeTo(NameRoutes.updateIngredientScreen, onPopCallback: (value){
-              var qt = value['qt'];
-              String unit = value['unit'].toString();
-              if(qt is int){
-                item!.quantity = qt.toDouble();
-              }
-              item?.quantityType = unit;
-              setState(() {
-                
-              });
-            }, arguments: IngredientModel(id: item?.id, name: productName, quantity: item?.quantity?.toInt(), unit: item?.quantityType));
-            },
-            child:  const Icon(Icons.edit),
-          )
-              // Container(
-              //   width: scaleW(36),
-              //   height: scaleW(36),
-              //   decoration: BoxDecoration(
-              //     shape: BoxShape.circle,
-              //     color: primaryColor,
-              //   ),
-              //   child: IconButton(
-              //     padding: EdgeInsets.zero,
-              //     icon: const Icon(Icons.add, color: Colors.white,),
-              //     onPressed: () {
-              //       // Handle quantity decrement
-              //       item?.quantity = (item.quantity ?? 1) + 1;
-              //       setState(() {
-                      
-              //       });
-              //     },
-              //   ),
-              // ),
+                onTap: () {
+                  AppRouting().routeTo(NameRoutes.updateIngredientScreen,
+                      onPopCallback: (value) {
+                    var qt = value['qt'];
+                    String unit = value['unit'].toString();
+                    if (qt is double) {
+                      if (qt <= 0) {
+                        if (deleteItem != null) {
+                          deleteItem();
+                          return;
+                        }
+                      }
+                      item!.quantity = qt.toDouble();
+                    }
+                    item?.quantityType = unit;
+                    setState(() {});
+                  },
+                      arguments: IngredientModel(
+                          id: item?.id,
+                          name: productName,
+                          quantity: item?.quantity?.toDouble(),
+                          unit: item?.quantityType));
+                },
+                child: const Icon(Icons.edit),
+              )
             ],
           ),
         ],

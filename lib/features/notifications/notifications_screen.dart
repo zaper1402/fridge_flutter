@@ -35,12 +35,13 @@ class _NotificationScreenState extends State<NotificationScreen> {
               : ListView.builder(
                   itemCount: notificationController.notificationList.length,
                   itemBuilder: (context, index) {
+                    int day = (notificationController.notificationList[index].expiryDate ?? DateTime.now()).difference(DateTime.now()).inDays;
                     return NotificationItem(
                         itemName: notificationController
                                 .notificationList[index].productName ??
                             '',
                         expiryMessage:
-                            "Are Expiring In ${(notificationController.notificationList[index].expiryDate ?? DateTime.now()).difference(DateTime.now()).inDays} Day!");
+                            " expiring In $day ${day == 1 ? 'day' : 'days'}!");
                   }),
         ),
       ),
