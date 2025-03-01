@@ -22,6 +22,9 @@ class CuisineController extends GetxController {
     CuisineModel(name: 'Indian', imageUrl: indianImage),
     CuisineModel(name: 'French', imageUrl: frenchImage),
     CuisineModel(name: 'Chinese', imageUrl: chineseImage),
+    CuisineModel(name: 'British', imageUrl: britishImage),
+    CuisineModel(name: 'Pan-Asian', imageUrl: panAsianImage),
+    CuisineModel(name: 'Western', imageUrl: westernImage),
   ];
 
   Future getCuisineList() async {

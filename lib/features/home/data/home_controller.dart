@@ -216,18 +216,58 @@ class HomeController extends GetxController {
 
   String getInventoryImage(String name) {
     switch (name.toLowerCase()) {
-      case 'fruit':
-        return fruits; // Assuming fruits is a variable holding the image name
       case 'vegetable':
         return vegetables;
       case 'dairy':
         return dairy;
       case 'meat & fish':
         return meatFish;
-      case 'ingredients & spices':
-        return spices;
       case 'grain':
         return grains;
+      case 'bakery':
+    return bakery;
+  case 'baking ingredients':
+    return bakingIngredients;
+  case 'canned food':
+    return cannedFood;
+  case 'cereal':
+    return cereal;
+  case 'condiment':
+    return condiment;
+  case 'dessert':
+    return dessert;
+  case 'drink':
+    return drink;
+  case 'dry fruits':
+    return dryFruits;
+  case 'dry goods':
+    return dryGoods;
+  case 'frozen food':
+    return frozenFood;
+  case 'fruit':
+    return fruit;
+  case 'herbs':
+    return herbs;
+  case 'meat':
+    return meat;
+  case 'oil':
+    return oil;
+  case 'pasta':
+    return pasta;
+  case 'pickled items':
+    return pickledItems;
+  case 'ready-to-eat meals':
+    return readyToEatMeals;
+  case 'sauces':
+    return sauces;
+  case 'seafood':
+    return seafood;
+  case 'snacks':
+    return snacks;
+  case 'spices':
+    return spices;
+  case 'ingredients & spices':
+    return spices;
       default:
         return categoryPlaceholder;
     }
