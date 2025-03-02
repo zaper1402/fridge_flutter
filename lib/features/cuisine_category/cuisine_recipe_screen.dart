@@ -110,7 +110,9 @@ class _CuisineRecipeScreenState extends State<CuisineRecipeScreen> {
                                 errorBuilder: (context, error, stackTrace) {
                                   return SizedBox(
                                     height: scaleH(250),
-                                    child: const Icon(Icons.error),
+                                    child: Image.asset(recipePlaceholder,
+                                    fit: BoxFit.cover,
+                                    ),
                                   );
                                 },
                               ),
@@ -224,10 +226,13 @@ class _CuisineRecipeScreenState extends State<CuisineRecipeScreen> {
                                       0,
                                   itemBuilder: (_, index) {
                                     return Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Container(
                                           width: scaleW(4),
                                           height: scaleW(4),
+                                          margin: EdgeInsets.only(top: scaleH(8)),
                                           decoration: BoxDecoration(
                                               color: primaryColor,
                                               shape: BoxShape.circle),
@@ -286,10 +291,13 @@ class _CuisineRecipeScreenState extends State<CuisineRecipeScreen> {
                                       0,
                                   itemBuilder: (_, index) {
                                     return Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Container(
                                           width: scaleW(4),
                                           height: scaleW(4),
+                                          margin: EdgeInsets.only(top: scaleH(8)),
                                           decoration: BoxDecoration(
                                               color: primaryColor,
                                               shape: BoxShape.circle),

@@ -64,9 +64,9 @@ class _GroceryDetailsScreenState extends State<GroceryDetailsScreen> {
                 itemCount: product?.entries?.length ?? 0,
                 itemBuilder: (context, index) {
                   String productName =
-                      (product?.product?.subname ?? '').isNotEmpty
-                          ? product?.product?.subname ?? ''
-                          : product?.product?.name ?? '';
+                      (product?.entries?[index].subname ?? '').isNotEmpty
+                          ? ((product?.entries?[index].subname ?? ''))
+                          : (product?.product?.name ?? '');
                   return _buildItemCard(productName, product?.entries?[index],
                       deleteItem: () async {
                     Future.delayed(const Duration(seconds: 1), () {
@@ -91,7 +91,9 @@ class _GroceryDetailsScreenState extends State<GroceryDetailsScreen> {
                         quantity: entry.quantity ?? 0,
                         quantityType: entry.quantityType));
                   }
-                  await Get.find<HomeController>()
+                  await (Get.isRegistered<HomeController>()
+                          ? Get.find<HomeController>()
+                          : Get.put(HomeController()))
                       .updateEntryQuantity(entryData);
                 },
                 backgroundColor: primaryColor,

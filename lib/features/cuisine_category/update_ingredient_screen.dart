@@ -137,8 +137,10 @@ class _UpdateIngredientScreenState extends State<UpdateIngredientScreen> {
                     quantity: 0,
                     quantityType: ingredientModel?.unit));
 
-                await Get.find<HomeController>().updateEntryQuantity(entryData,
-                    navigateHome: false);
+                await (Get.isRegistered<HomeController>()
+                        ? Get.find<HomeController>()
+                        : Get.put(HomeController()))
+                    .updateEntryQuantity(entryData, navigateHome: false);
               },
               child: Text("Delete", style: TextStyle(color: primaryColor)),
             ),

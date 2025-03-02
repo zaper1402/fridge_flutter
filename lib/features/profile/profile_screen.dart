@@ -74,7 +74,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       '${profileController.profileModel.value?.phoneNumber}'),
                   _buildProfileItem(
                       'Date Of Birth',
-                      (DateFormat('DD/MM/yyy').format(
+                      (DateFormat('dd/MM/yyy').format(
                           profileController.profileModel.value?.dateOfBirth ??
                               DateTime.now()))),
                 ],

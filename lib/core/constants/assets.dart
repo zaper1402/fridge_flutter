@@ -51,3 +51,4 @@ const String seafood = "${imagesBasePath}Seafood.png";
 const String snacks = "${imagesBasePath}Snacks.png";
 const String spices = "${imagesBasePath}Spices.png";
 const String vegetable = "${imagesBasePath}Vegetable.png";
+const String recipePlaceholder = "${imagesBasePath}recipe_placeholder.jpg";

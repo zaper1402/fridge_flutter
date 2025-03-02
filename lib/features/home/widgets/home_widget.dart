@@ -54,25 +54,33 @@ class _HomeWidgetState extends State<HomeWidget> {
                 child: EmptyFridgeMessage(
                 emptyString: 'empty_fridge'.tr,
               ))
-            : Column(
-                children: [
-                  VerticalGap(scaleH(10)),
-                  CategoryGrid(categories: controller.categories),
-                  VerticalGap(scaleH(40)),
-                  Center(
-                    child: CustomButton(
-                      text: 'lets_cook'.tr,
-                      onPressed: () {
-                        AppRouting().routeTo(NameRoutes.cuisineCategoryScreen);
-                      },
-                      backgroundColor: primaryColor,
-                      textColor: Colors.white,
-                      padding: EdgeInsets.symmetric(
-                          vertical: scaleH(16), horizontal: scaleW(40)),
-                      borderRadius: 20,
+            : Expanded(
+                child: Column(
+                  children: [
+                    VerticalGap(scaleH(10)),
+                    controller.categories.length >= 9
+                        ? Expanded(
+                            child:
+                                CategoryGrid(categories: controller.categories))
+                        : CategoryGrid(categories: controller.categories),
+                    VerticalGap(scaleH(30)),
+                    Center(
+                      child: CustomButton(
+                        text: 'lets_cook'.tr,
+                        onPressed: () {
+                          AppRouting()
+                              .routeTo(NameRoutes.cuisineCategoryScreen);
+                        },
+                        backgroundColor: primaryColor,
+                        textColor: Colors.white,
+                        padding: EdgeInsets.symmetric(
+                            vertical: scaleH(16), horizontal: scaleW(40)),
+                        borderRadius: 20,
+                      ),
                     ),
-                  ),
-                ],
+                    VerticalGap(scaleH(20)),
+                  ],
+                ),
               ))
       ],
     );

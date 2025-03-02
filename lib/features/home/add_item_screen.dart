@@ -53,7 +53,7 @@ class AddItemScreen extends GetView<HomeController> {
                             controller: controller.subnameController),
                         VerticalGap(scaleH(20)),
                         _buildTextField('Quantity', '500',
-                            controller: controller.productQuantity),
+                            controller: controller.productQuantity, keyboardType: TextInputType.number),
                         VerticalGap(scaleH(20)),
                         CustomDropdown(
                           dataList: controller.quantityList,
@@ -63,25 +63,6 @@ class AddItemScreen extends GetView<HomeController> {
                             controller.selectedUnit = id;
                           },
                         ),
-                        // VerticalGap(scaleH(20)),
-                        // CustomDropdown(
-                        //   dataList: controller.categoryList,
-                        //   hintText: 'MILK',
-                        //   heading: 'Category',
-                        //   onSelect: (id) {
-                        //     controller.selectedCategory = id;
-
-                        //   },
-                        // ),
-                        // VerticalGap(scaleH(20)),
-                        // CustomDropdown(
-                        //   dataList: controller.allergyList,
-                        //   hintText: 'Apple',
-                        //   heading: 'Allergy Product',
-                        //   onSelect: (id) {
-                        //     controller.selectedAllergy = id;
-                        //   },
-                        // ),
                         VerticalGap(scaleH(20)),
                         _buildTextField('Brand', 'Optional',
                             controller: controller.productBrand),
@@ -158,8 +139,12 @@ class AddItemScreen extends GetView<HomeController> {
                   child: CustomButton(
                     text: 'done'.tr,
                     onPressed: () async {
-                      bool isSuccess =
-                          await Get.find<HomeController>().addProductData();
+                      HomeController homeController = Get.isRegistered<HomeController>()
+                              ? Get.find<HomeController>()
+                              : Get.put(HomeController());
+                      if(homeController.isAddProductInprogress.value) return;
+                      bool isSuccess = await homeController
+                          .addProductData();
                       if (isSuccess) {
                         Future.delayed(const Duration(seconds: 2), () {
                           AppRouting().offAllNavigateTo(NameRoutes.homeScreen);
@@ -186,7 +171,7 @@ class AddItemScreen extends GetView<HomeController> {
   }
 
   Widget _buildTextField(String label, String hint,
-      {required TextEditingController controller}) {
+      {required TextEditingController controller, TextInputType? keyboardType}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -199,6 +184,7 @@ class AddItemScreen extends GetView<HomeController> {
         TextField(
           controller: controller,
           cursorColor: borderColor,
+          keyboardType: keyboardType,
           decoration: InputDecoration(
             hintText: hint,
             hintStyle: TextStyle(color: borderColor),

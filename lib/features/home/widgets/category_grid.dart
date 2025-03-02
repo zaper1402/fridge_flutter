@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fridge_app/core/constants/assets.dart';
 import 'package:fridge_app/core/constants/dimens.dart';
 import 'package:fridge_app/features/common_widgets/custom_text.dart';
 import 'package:fridge_app/features/home/data/data/inventory_model.dart';
@@ -10,7 +11,8 @@ import 'package:fridge_app/themes/colors.dart';
 class CategoryGrid extends StatelessWidget {
   final List<Inventory> categories; // Category list passed from outside
 
-  const CategoryGrid({super.key, required this.categories}); // Constructor to receive the list
+  const CategoryGrid(
+      {super.key, required this.categories}); // Constructor to receive the list
 
   @override
   Widget build(BuildContext context) {
@@ -53,18 +55,20 @@ class CategoryGrid extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             ClipRRect(
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(10)),
               child: SizedBox(
                 height: scaleW(100),
                 width: double.infinity,
                 child: Image.asset(
                   item.image ?? '',
-                  
                   fit: BoxFit.cover,
                   errorBuilder: (context, object, stackTrace) {
-                    return const Center(child: Icon(Icons.error));
+                    return Image.asset(
+                      categoryPlaceholder,
+                      fit: BoxFit.cover,
+                    );
                   },
-                  
                 ),
               ),
             ),
@@ -73,7 +77,9 @@ class CategoryGrid extends StatelessWidget {
               child: CustomText(
                 item.name ?? '',
                 textAlign: TextAlign.center,
-                style: getTextTheme().defaultText.copyWith(color: textBrownColor, fontSize: scaleW(12)),
+                style: getTextTheme()
+                    .defaultText
+                    .copyWith(color: textBrownColor, fontSize: scaleW(12)),
               ),
             ),
           ],

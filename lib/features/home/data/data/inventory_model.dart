@@ -136,8 +136,9 @@ class Entry {
   final String? creationDate;
   final int? userInventory;
    String? quantityType;
+   String? subname;
 
-  Entry({this.id, this.quantity, this.expiryDate, this.creationDate, this.userInventory, this.quantityType});
+  Entry({this.id, this.quantity, this.expiryDate, this.creationDate, this.userInventory, this.quantityType, this.subname});
 
   factory Entry.fromJson(Map<String, dynamic> json) {
     return Entry(
@@ -146,7 +147,8 @@ class Entry {
       expiryDate: DateTime.parse(json['expiry_date']),
       creationDate: json['creation_date'],
       userInventory: json['user_inventory'],
-      quantityType: json['quantity_type']
+      quantityType: json['quantity_type'],
+      subname: json['subname'],
     );
   }
 
@@ -157,7 +159,8 @@ class Entry {
       'expiry_date': expiryDate,
       'creation_date': creationDate,
       'user_inventory': userInventory,
-      'quantity_type' : quantityType
+      'quantity_type' : quantityType,
+      'subname' : subname
     };
   }
 }

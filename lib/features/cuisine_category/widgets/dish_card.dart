@@ -125,7 +125,11 @@ class DishCard extends StatelessWidget {
                       return SizedBox(
                           height: scaleH(140),
                           width: double.infinity,
-                          child: const Icon(Icons.error));
+                          child: Image.asset(recipePlaceholder,
+                          fit: BoxFit.cover,
+                          height: scaleH(140),
+                          width: double.infinity,
+                          ));
                     },
                   ),
                 ),

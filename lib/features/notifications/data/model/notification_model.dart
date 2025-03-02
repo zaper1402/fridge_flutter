@@ -12,14 +12,14 @@ class NotificationModel {
       expiryDate: json['expiry_date'] != null
           ? DateTime.parse(json['expiry_date'])
           : null,
-      productName: json['user_inventory__product__name'] as String?,
+      productName: json['user_inventory__subname'] as String?,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'expiry_date': expiryDate?.toIso8601String(),
-      'user_inventory__product__name': productName,
+      'user_inventory__subname': productName,
     };
   }
 }

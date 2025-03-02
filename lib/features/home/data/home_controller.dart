@@ -26,6 +26,7 @@ class HomeController extends GetxController {
   List<DropDownData> quantityList = [];
   List<DropDownData> allergyList = [];
   RxBool isStandardExpiry = RxBool(true);
+  RxBool isAddProductInprogress = RxBool(false);
 
   RxBool isInventroyEmpty = RxBool(true);
   int userId = 0;
@@ -82,6 +83,7 @@ class HomeController extends GetxController {
   }
 
   Future<bool> addProductData() async {
+    isAddProductInprogress.value = true;
     if (validateProduct(ProductItemRequest(
         id: selectedProductId,
         brand: productBrand.text,
@@ -125,6 +127,7 @@ class HomeController extends GetxController {
         Get.back();
       }
     }
+    isAddProductInprogress.value = false;
     return false;
   }
 
